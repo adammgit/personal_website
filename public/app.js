@@ -1,3 +1,4 @@
+import "./styles.css"
 const projects = [
     {
         id: "0",
@@ -23,7 +24,6 @@ const projects = [
 
 const insertTechnologies = async() => {
     let techConts = Array.from(document.querySelectorAll(".technologies-container"))
-    console.log(techConts)
     for (let i = 0; i < techConts.length; i++){
         if (techConts[i].id == projects[i].id){
             for (let j = 0; j < projects[i].technologies.length; j++){
@@ -51,7 +51,7 @@ const insertProjectCards = async() => {
                                 <a href="${projects[i].link}">
                                     <img
                                         class="link-card-icon"
-                                        src="../static/images/link.svg"
+                                        src="./static/images/link.svg"
                                     />
                                 </a>
                                 <label class="button-descript">click to see more</label>
@@ -63,7 +63,7 @@ const insertProjectCards = async() => {
                                 <img
                                     id="${projects[i].id}"
                                     class="video-card-icon"
-                                    src="../static/images/play_video.svg"
+                                    src="./static/images/play_video.svg"
                                     onclick="handleVideoLinkClick(event)"
                                 />
                                 <label class="button-descript">click to watch demo video</label>
@@ -90,7 +90,7 @@ const handleVideoLinkClick = (event) => {
                     Your browser does not support the video tag.
                 </video>`
     let closeButton = `<img
-                            src="../static/images/close_small.svg"
+                            src="./static/images/close_small.svg"
                             class="close-button"
                             onclick="handleClosePlayer(event)"
                         />`
@@ -111,6 +111,10 @@ const handleClosePlayer = (event) => {
     videoPlayer.style.display = "none"
     modalBackground.style.display = "none"
 }
+
+/* expose functions to global scope */
+window.handleClosePlayer = handleClosePlayer
+window.handleVideoLinkClick = handleVideoLinkClick
 
 
 window.addEventListener('DOMContentLoaded', async(event) => {
