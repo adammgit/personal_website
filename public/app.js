@@ -66,7 +66,12 @@ const insertProjectCards = async() => {
                                     smart_display
                                 </i>
 
-                                <label class="button-descript">click to watch demo video</label>
+                                <label
+                                    onclick="handleVideoLinkClick(event)"
+                                    class="button-descript"
+                                >
+                                    click to watch demo video
+                                </label>
 
                             </div>
 
