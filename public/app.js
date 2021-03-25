@@ -3,22 +3,32 @@ const projects = [
     {
         id: "0",
         title: "InStorage",
-        description: "A Storage management application",
-        technologies: ["JavaScript", "Node.js", "Express", "MongoDB", "Json Web Token", "Webpack", "Babel", "CSS", "HTML", "React.js", "Redux", "SVG"],
+        description: `InStorage is a storage management application developed with React.js,
+                        Redux, CSS and SVG on the frontend and Node.js and MongoDB on the backend.
+                        This application was not intended for production as it was a project I used to
+                        experiment with the above-mentioned technologies.`,
+        technologies: ["JavaScript", "Node.js", "Express", "MongoDB", "Json Web Token", "Webpack", "Babel", "CSS", "HTML", "React.js", "Redux", "SVG", "cloud"],
         link: "https://google.com",
-        video: "https://adammwebsite.s3.eu-central-1.amazonaws.com/InStorage_Demo.mp4"
+        //video: "https://adammwebsite.s3.eu-central-1.amazonaws.com/InStorage_Demo.mp4"
         //video: "../static/videos/InStorage_Demo.mp4"
-        // video: "https://youtu.be/M5npoAcG2V0"
+        video: "https://www.youtube.com/embed/M5npoAcG2V0"
     },
     {
         id: "1",
         title: "Instagram Tree",
-        description: "Instagram posts app with an admin content management page",
-        technologies: ["JavaScript", "Node.js", "Express", "MongoDB", "Json Web Token", "Webpack", "Babel", "CSS", "HTML", "React.js", "Redux"],
+        description: `Instagram Tree is an Instagram posts management application I am building
+                        for a client in Hong Kong. It is a single-page web app utilising React.js, 
+                        Redux and CSS on the frontend and Node.js on the backend. Data is saved
+                        to a MongoDB database hosted on MongoDB Atlas cloud service.
+                        Regular users can see the posts and go to the company's website by clicking on them.
+                        There is also an admin content management page, where the admin can add new posts,
+                        delete them, as well as change the order in which the posts appear on the users' page.
+                        Post thumbnail images are resized and posted to AWS S3 storage service.`,
+        technologies: ["JavaScript", "Node.js", "Express", "MongoDB", "Json Web Token", "Webpack", "Babel", "CSS", "HTML", "React.js", "Redux", "cloud"],
         link: "https://google.com",
-        video: "https://adammwebsite.s3.eu-central-1.amazonaws.com/InstaTree_Demo_Video.mp4"
-        //video: "../static/videos/InstaTree_Demo_Video.mp4"
-        // video: "https://youtu.be/NCkEVFZOhgE"
+        //video: "https://adammwebsite.s3.eu-central-1.amazonaws.com/InstaTree_Demo_Video.mp4",
+        //video: "../static/videos/InstaTree_Demo_Video.mp4",
+        video: "https://www.youtube.com/embed/NCkEVFZOhgE"
     }
 ]
 
@@ -45,27 +55,17 @@ const insertProjectCards = async() => {
                             <span class="tech-label">Technologies:</span>
 
                             <div id="${projects[i].id}" class="technologies-container"></div>
-                    
-                            <div class="link-container">
 
-                                <a href="${projects[i].link}">
-                                    <img
-                                        class="link-card-icon"
-                                        src="./static/images/link.svg"
-                                    />
-                                </a>
-                                <label class="button-descript">click to see more</label>
-
-                            </div>
-
-                            <div class="video-link-container">
+                            <div id="${projects[i].id}" class="video-link-container">
                                 
-                                <img
-                                    id="${projects[i].id}"
-                                    class="video-card-icon"
-                                    src="./static/images/play_video.svg"
+                                <i
+                                    id="video-card-icon"
+                                    class="material-icons"
                                     onclick="handleVideoLinkClick(event)"
-                                />
+                                >
+                                    smart_display
+                                </i>
+
                                 <label class="button-descript">click to watch demo video</label>
 
                             </div>
@@ -77,7 +77,7 @@ const insertProjectCards = async() => {
 
 const handleVideoLinkClick = (event) => {
     event.stopPropagation()
-    let id = event.target.id, video
+    let id = event.target.parentNode.id, video
     let videoPlayer = document.querySelector(".video-player")
     let modalBackground = document.querySelector(".modal-wrapper")
     for (let i = 0; i < projects.length; i++){
@@ -85,15 +85,20 @@ const handleVideoLinkClick = (event) => {
             video = projects[i].video
         }
     }
-    let html = `<video class="video" width="100%" height="100%" controls autoplay>
-                    <source src="${video}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>`
-    let closeButton = `<img
-                            src="./static/images/close_small.svg"
-                            class="close-button"
+    let html = `<iframe
+                    class="video"
+                    width="100%" height="100%" src="${video}"
+                    title="YouTube video player" frameborder="0" allow="accelerometer;
+                    autoplay; clipboard-write; encrypted-media; gyroscope;
+                    picture-in-picture" allowfullscreen>
+                </iframe>`
+    let closeButton = `<i
+                            id="close-button"
+                            class="material-icons"
                             onclick="handleClosePlayer(event)"
-                        />`
+                        >
+                            close
+                        </i>`
     window.scrollTo(0, 0)
     modalBackground.style.display = "block"
     videoPlayer.style.display = "block"
@@ -105,7 +110,7 @@ const handleClosePlayer = (event) => {
     let modalBackground = document.querySelector(".modal-wrapper")
     let videoPlayer = document.querySelector(".video-player")
     let video = document.querySelector(".video")
-    let closeButton = document.querySelector(".close-button")
+    let closeButton = document.getElementById("close-button")
     videoPlayer.removeChild(video)
     videoPlayer.removeChild(closeButton)
     videoPlayer.style.display = "none"
