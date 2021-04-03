@@ -1,41 +1,49 @@
 import "./styles.css"
-const projects = [
-    {
-        id: "0",
-        title: "InStorage",
-        description: `InStorage is a storage management application developed with React.js,
-                        Redux, CSS and SVG on the frontend and Node.js and MongoDB on the backend.
-                        This application was not intended for production as it was a project I used to
-                        experiment with the above-mentioned technologies.`,
-        technologies: ["JavaScript", "Node.js", "Express", "MongoDB", "Json Web Token", "Webpack", "Babel", "CSS", "HTML", "React.js", "Redux", "SVG", "cloud"],
-        link: "https://google.com",
-        //video: "https://adammwebsite.s3.eu-central-1.amazonaws.com/InStorage_Demo.mp4"
-        //video: "../static/videos/InStorage_Demo.mp4"
-        video: "https://www.youtube.com/embed/M5npoAcG2V0"
-    },
-    {
-        id: "1",
-        title: "Instagram Tree",
-        description: `Instagram Tree is an Instagram posts management application I am building
-                        for a client in Hong Kong. It is a single-page web app utilising React.js, 
-                        Redux and CSS on the frontend and Node.js on the backend. Data is saved
-                        to a MongoDB database hosted on MongoDB Atlas cloud service.
-                        Regular users can see the posts and go to the company's website by clicking on them.
-                        There is also an admin content management page, where the admin can add new posts,
-                        delete them, as well as change the order in which the posts appear on the users' page.
-                        Post thumbnail images are resized and posted to AWS S3 storage service.`,
-        technologies: ["JavaScript", "Node.js", "Express", "MongoDB", "Json Web Token", "Webpack", "Babel", "CSS", "HTML", "React.js", "Redux", "cloud"],
-        link: "https://google.com",
-        //video: "https://adammwebsite.s3.eu-central-1.amazonaws.com/InstaTree_Demo_Video.mp4",
-        //video: "../static/videos/InstaTree_Demo_Video.mp4",
-        video: "https://www.youtube.com/embed/NCkEVFZOhgE"
-    }
-]
+var projects
+var apiUrl = "http://localhost:3000"
+
+const getData = () => {
+    const xhr = new XMLHttpRequest()
+    return new Promise((resolve, reject) => {
+        xhr.onerror = (error) => {
+            const message = {
+                text: "Connection error.",
+                type: "warning"
+            }
+            console.log(error)
+            reject(message)
+        }
+        xhr.onload = (error) => {
+            if (xhr.readyState !== 4){
+                console.log(error)
+                const message = {
+                    text: "Server error.",
+                    type: "warning"
+                }
+                reject(message)
+            }
+            if (xhr.status === 200){
+                const data = xhr.response
+                resolve(data)
+            } else {
+                const message = {
+                    text: "Could not retrieve data from server.",
+                    type: "warning"
+                }
+                reject(message)
+            }
+        }
+        xhr.open("GET", `${apiUrl}/get_data`, true)
+        xhr.setRequestHeader("content-type", "application/json")
+        xhr.responseType = "json"
+        xhr.send(null)
+    })
+}
 
 const insertTechnologies = async() => {
     let techConts = Array.from(document.querySelectorAll(".technologies-container"))
     for (let i = 0; i < techConts.length; i++){
-        if (techConts[i].id == projects[i].id){
+        if (techConts[i].id == projects[i]._id){
             for (let j = 0; j < projects[i].technologies.length; j++){
                 let html = `<span class="technology-item">${projects[i].technologies[j]}</span>`
                 techConts[i].insertAdjacentHTML("beforeend", html)
@@ -47,16 +55,16 @@ const insertTechnologies = async() => {
 const insertProjectCards = async() => {
     let portfolio = document.querySelector(".portfolio-container")
     for (let i = 0; i < projects.length; i++){
-        let cardHTML = `<div id="${projects[i].id}" class="project-card">
+        let cardHTML = `<div id="${projects[i]._id}" class="project-card">
                             <span id="instorage-title" class="card-title">${projects[i].title}</span>
 
                             <span id="instorage-descript" class="card-descript">${projects[i].description}</span>
 
                             <span class="tech-label">Technologies:</span>
 
-                            <div id="${projects[i].id}" class="technologies-container"></div>
+                            <div id="${projects[i]._id}" class="technologies-container"></div>
 
-                            <div id="${projects[i].id}" class="video-link-container">
+                            <div id="${projects[i]._id}" class="video-link-container">
                                 
                                 <i
                                     id="video-card-icon"
@@ -86,7 +94,7 @@ const handleVideoLinkClick = (event) => {
     let videoPlayer = document.querySelector(".video-player")
     let modalBackground = document.querySelector(".modal-wrapper")
     for (let i = 0; i < projects.length; i++){
-        if (projects[i].id == id){
+        if (projects[i]._id == id){
             video = projects[i].video
         }
     }
@@ -127,8 +135,11 @@ window.handleClosePlayer = handleClosePlayer
 window.handleVideoLinkClick = handleVideoLinkClick
 
 
-window.addEventListener('DOMContentLoaded', async(event) => {
+window.addEventListener('DOMContentLoaded', (event) => {
     console.log("Dom Loaded")
-    await insertProjectCards()
-    await insertTechnologies()
+    getData().then(async(data) => {
+        projects = data
+        await insertProjectCards()
+        insertTechnologies()
+    })
 })
